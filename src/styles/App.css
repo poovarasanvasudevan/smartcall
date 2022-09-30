@@ -1,4 +1,176 @@
 #root {
-  @apply text-center p-2;
-  margin: 0 auto;
+    @apply text-center p-2;
+    margin: 0 auto;
+
+    --header-color: #222d32;
+}
+
+body {
+    /*background: #f8f7f7 !important;*/
+    background: #f0f1f3 !important;
+    font-family: 'Radio Canada', sans-serif !important;
+}
+
+.navbar {
+    @apply bg-white px-3 py-1.5 flex shadow-sm;
+}
+
+.navbar-controls {
+    @apply flex justify-between items-center px-2;
+}
+
+.ant-select-selection-item {
+    text-align: start;
+}
+
+.call-panel {
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+    background: white;
+    height: 410px;
+    width: 270px;
+    z-index: 500;
+
+    @apply shadow-lg flex flex-col;
+}
+
+.transfer-panel {
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+    background: white;
+    height: 470px;
+    width: 270px;
+    z-index: 500;
+
+    @apply shadow-lg flex flex-col;
+}
+
+.call-header-panel {
+    background: var(--header-color);
+    @apply px-2 py-2 flex items-center text-white;
+}
+
+.call-footer-panel {
+    @apply border-t border-gray-100 p-2 flex;
+}
+
+.call-panel-body {
+    @apply flex-1 flex flex-col items-center justify-center;
+}
+
+.dialer-panel {
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+    background: white;
+    height: 380px;
+    width: 250px;
+    z-index: 500;
+    @apply shadow-lg flex flex-col;
+}
+
+.dialer-layout {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-row-gap: 14px;
+    grid-column-gap: 20px;
+    padding-top: 12px;
+    padding-bottom: 16px;
+    flex: 1;
+
+
+    @apply mt-3;
+}
+
+.dialer-btn {
+    border-radius: 50%;
+    background: #e4f0f9;
+}
+
+.toolbar-shadow {
+    box-shadow: 0 4px 2px -2px #fafafa;
+}
+
+.calls-grid {
+    @apply flex px-5 py-3 flex-col bg-white;
+    align-items: flex-start;
+}
+
+.ant-table-tbody > tr > td {
+    border-bottom: none !important;
+}
+
+
+.ant-table-thead .tb-header1 {
+    padding: 4px 16px !important;
+    background: #eaeaea !important;
+    font-size: 12px;
+    @apply font-semibold;
+}
+
+.tb-header1 {
+    padding: 4px 16px !important;
+}
+
+.ant-table-thead .ant-table-cell {
+    background: #eaeaea !important;
+}
+
+.callcommand-panel {
+    position: absolute;
+    bottom: 0;
+
+    @apply flex;
+}
+
+.control-btn-color {
+    background: #323b3f;
+}
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: white !important;
+
+}
+.ant-tabs-tab-btn {
+    padding: 0 14px;
+}
+
+/*.ant-tabs-nav-wrap {*/
+/*    background: var(--header-color);*/
+/*    color: white;*/
+/*}*/
+
+/*.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {*/
+/*    color: white !important;*/
+/*}*/
+
+/*.ant-tabs-tab-active {*/
+/*    color: white;*/
+/*}*/
+
+
+/* width */
+.scroll-style::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+}
+
+/* Track */
+.scroll-style::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.scroll-style::-webkit-scrollbar-thumb {
+    background: #cccccc;
+}
+
+/* Handle on hover */
+.scroll-style::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.ant-table-expanded-row td {
+    background: white !important;
 }

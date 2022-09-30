@@ -1,0 +1,5 @@
+
+
+GET https://sfi-sbox.ctsmartdesk.com/SFInterface/auth/v1/me?groups=0&ad_groups=0&default_application=0&Role=0&Preference=0
+access_token:0becfa19-b740-4bac-a617-d4fae0cf12da
+refresh_token:d8c0acef-d0f0-44e3-8f47-dbbbe9bc0a0d

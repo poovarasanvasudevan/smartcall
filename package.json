@@ -9,8 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-hook/resize-observer": "^1.2.6",
+    "@react-hook/window-size": "^3.1.1",
+    "@siwting/jssip": "^3.9.2",
+    "antd": "^4.23.2",
+    "dateformat": "^5.0.3",
+    "gantt-task-react": "^0.3.9",
+    "jotai": "^1.8.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.5",
+    "react-icons": "^4.4.0",
     "react-router-dom": "^6.4.0"
   },
   "devDependencies": {
