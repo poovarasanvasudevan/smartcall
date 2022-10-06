@@ -86,7 +86,7 @@ const GanttTimeLineView = memo(({data}) => {
     return (
         <div className={'flex flex-col border border-gray-100 bg-white overflow-y-auto scroll-style'}
              ref={scrollH}
-             style={{width: windowWidth - 95}}
+             //style={{width: windowWidth - 95}}
             //style={{width: '100%'}}
         >
             <div className={'flex app-widow'} >

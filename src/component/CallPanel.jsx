@@ -7,31 +7,21 @@ import {memo, useCallback, useEffect, useState} from "react";
 import Draggable from "react-draggable";
 import avatar from '../assets/avatar.webp'
 import {Avatar} from "antd";
+import CallTimeCounter from "./CallTimeCounter.jsx";
 
 
 const CallPanel = memo(() => {
 
     const [call] = useAtom(currentCall)
-    const [callTime, setCallTime] = useState(0)
     const [callState] = useAtom(currentCallState)
-    let timer = null
 
-    useEffect(() => {
-        return () => {
-            if (timer) {
-                clearInterval(timer)
-            }
-        }
-    }, [call])
 
-    const acceptCall = useCallback(() => {
+    const acceptCall = () => {
         EventBus.$dispatch(ATTEN_CALL, {})
-    },[callTime])
+    }
 
     const endCall = () => {
         EventBus.$dispatch(END_CALL, {})
-        setCallTime(0)
-        clearInterval(timer)
     }
 
     return (
@@ -49,9 +39,9 @@ const CallPanel = memo(() => {
                         <div className={'call-panel-body'}>
                             <Avatar size={72} src={avatar} width={200} height={200}/>
 
-                            <div className={'mt-4'} style={{fontSize: 15}}>UnKnown Number</div>
-                            {callTime > 0 &&
-                                <div className={'mt-1'} style={{fontSize: 13}}>{formatCallFromSeconds(callTime)}</div>}
+                            <div className={'mt-4'} style={{fontSize: 15}}>UnKnown Number ({call._display_name})</div>
+                            <div className={'text-gray-700'} style={{fontSize: 13}}>{call._display_name}</div>
+                            {callState === CALL_STATE.ACCEPTED && <CallTimeCounter/>}
                         </div>
 
                         <div className={'call-footer-panel justify-center'}>

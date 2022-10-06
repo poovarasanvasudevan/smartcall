@@ -1,4 +1,5 @@
 import dateFormat from "dateformat";
+import {SIP_STATUS} from "./Config.js";
 
 export const Store = {
     set: (key, value) => {
@@ -70,4 +71,29 @@ export function formatDateTime(date, format = "yyyy-mm-dd HH:MM:ss") {
 
 export function getSecondsBetweenDates(startDate, endDate) {
     return Math.floor((endDate - startDate) / 1000);
+}
+
+export function extractInitials(name) {
+    let initials = name.match(/\b\w/g) || [];
+    initials = ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
+    return initials;
+}
+
+export function sipStatusColor(status) {
+    switch (status) {
+        case SIP_STATUS.CONNECTED:
+            return '#279e66'
+        case SIP_STATUS.CONNECTING:
+            return '#ffcc00'
+        case SIP_STATUS.ERROR:
+            return '#ef5242'
+        case SIP_STATUS.DISCONNECTED:
+            return '#ef5242'
+        case SIP_STATUS.REGISTERING:
+            return '#ffcc00'
+        case SIP_STATUS.REGISTERED:
+            return '#279e66'
+        default:
+            return '#ef5242'
+    }
 }

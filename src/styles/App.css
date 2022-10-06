@@ -7,12 +7,15 @@
 
 body {
     /*background: #f8f7f7 !important;*/
-    background: #f0f1f3 !important;
-    font-family: 'Radio Canada', sans-serif !important;
+    background: #eeeeee !important;
+    zoom: 0.92;
 }
 
 .navbar {
-    @apply bg-white px-3 py-1.5 flex shadow-sm;
+    @apply bg-white px-3 flex;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.05);
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
 }
 
 .navbar-controls {
@@ -37,11 +40,11 @@ body {
 
 .transfer-panel {
     position: absolute;
-    bottom: 0;
-    right: 10px;
+    bottom: 60px;
+    right: calc(50% - 135px);
     background: white;
-    height: 470px;
-    width: 270px;
+    height: 420px;
+    width: 280px;
     z-index: 500;
 
     @apply shadow-lg flex flex-col;
@@ -101,21 +104,28 @@ body {
 .ant-table-tbody > tr > td {
     border-bottom: none !important;
 }
+.hover-border-row:hover {
+    border: 1px solid #000 !important;
+}
+
 
 
 .ant-table-thead .tb-header1 {
     padding: 4px 16px !important;
-    background: #eaeaea !important;
+    background: var(--header-color);
     font-size: 12px;
     @apply font-semibold;
 }
+
+
 
 .tb-header1 {
     padding: 4px 16px !important;
 }
 
-.ant-table-thead .ant-table-cell {
-    background: #eaeaea !important;
+.ant-table-thead .ant-table-cell.tb-header1, .ant-table-thead .ant-table-cell.ant-table-row-expand-icon-cell {
+    background: #dadada !important;
+    color: black;
 }
 
 .callcommand-panel {
@@ -134,6 +144,9 @@ body {
 }
 .ant-tabs-tab-btn {
     padding: 0 14px;
+}
+.ant-select-selection-placeholder {
+    text-align: start;
 }
 
 /*.ant-tabs-nav-wrap {*/
@@ -171,6 +184,37 @@ body {
     background: #555;
 }
 
+.ant-table-scroll-horizontal::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+}
+
+/* Track */
+.ant-table-scroll-horizontal::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.ant-table-scroll-horizontal::-webkit-scrollbar-thumb {
+    background: #cccccc;
+}
+
+/* Handle on hover */
+.ant-table-scroll-horizontal::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+
 .ant-table-expanded-row td {
     background: white !important;
+}
+.support-person-row {
+    color: red !important;
+}
+.table-row-decorate {
+    background: #f9f9f9 !important;
+}
+
+.def-table-class {
+    @apply cursor-pointer;
 }

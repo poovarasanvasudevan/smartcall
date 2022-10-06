@@ -1,12 +1,13 @@
-import {Select} from "antd";
+import {Select, Space} from "antd";
 import {FiPhoneCall, MdNotes} from "react-icons/all";
 import {useAtom} from "jotai";
-import {dialpadState} from "../core/GlobalState.js";
+import {dialpadState, selectedAccountAtom} from "../core/GlobalState.js";
 import {useNavigate} from "react-router-dom";
 
 
 const ControlPanel = () => {
     const [dialPad, setDialPad] = useAtom(dialpadState)
+    const [selectedAccount] = useAtom(selectedAccountAtom)
     const navigate = useNavigate()
 
     const callLogs = () => {
@@ -15,28 +16,36 @@ const ControlPanel = () => {
 
     return (
 
-        <div className={'flex px-3 py-2'}>
-            <div className={'flex-1'}>
+        <div className={'flex mt-3 mb-1  py-1.5 bg-white mx-6 border border-gray-100'}>
+            <div className={'flex-1 pl-4 flex'}>
+                {selectedAccount && (
+                    <div className={'text-start font-semibold justify-center'} style={{fontSize: 13,lineHeight:1.8,textAlign:'start'}}>
+                        {selectedAccount.AccountName}
+                    </div>
+                )}
+
             </div>
-            <div className={'flex'}>
-                <button className={'flex bg-blue-600 px-2 py-1 items-center text-white mx-2'}
+            <Space className={'flex px-4'}>
+                <Select defaultValue="lucy" className={'border h-6'} style={{width: 120}} bordered={false}
+                        size={'small'}>
+                    <Select.Option value="jack">Available</Select.Option>
+                    <Select.Option value="lucy">Lunch</Select.Option>
+                    <Select.Option value="Yiminghe">Busy</Select.Option>
+                </Select>
+                <button className={'flex bg-blue-600 px-2 py-1 h-6 items-center text-white'}
                         onClick={callLogs}>
                     <MdNotes/>
                     &nbsp; &nbsp;Call Logs
                 </button>
 
-                <Select defaultValue="lucy" style={{width: 120}}>
-                    <Select.Option value="jack">Available</Select.Option>
-                    <Select.Option value="lucy">Lunch</Select.Option>
-                    <Select.Option value="Yiminghe">Busy</Select.Option>
-                </Select>
 
-                <button className={'flex bg-green-600 px-2 py-1 items-center text-white mx-2'}
+
+                <button className={'flex bg-green-600 h-6 px-2 py-1 items-center text-white'}
                         onClick={() => setDialPad(!dialPad)}>
                     <FiPhoneCall/>
                     &nbsp; &nbsp;Call
                 </button>
-            </div>
+            </Space>
         </div>
     )
 }
