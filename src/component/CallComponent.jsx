@@ -30,6 +30,7 @@ export const CallComponent = memo(() => {
     const [call, setLocalCallState] = useState(null)
     const [ua, setUa] = useState(null)
 
+
     const _toggleAudio = (type) => {
         if (type === 0) {
             callToneAudio.current.muted = true
@@ -133,40 +134,49 @@ export const CallComponent = memo(() => {
             e.session.on('ended', onIncomingCallEnded)
             e.session.on('accepted', onIncomingCallAccepted)
             e.session.on('failed', onIncomingCallFailed)
-            e.session.on('addstream', onAddStream)
+            e.session.on('peerconnection', () => {
+                e.session.connection.addEventListener('addstream', onAddStream)
+                // e.session.on('hold', onHold)
+                // e.session.on('unHold', onUnHold)
+                //
+                // e.session.on('mute', onMute)
+                // e.session.on('unmute', onUnMute)
+            })
 
-            e.session.on('hold', onHold)
-            e.session.on('unHold', onUnHold)
-
-            e.session.on('mute', onMute)
-            e.session.on('unmute', onUnMute)
 
             onIncomingCall(e)
         }
     }
-
-    const onHold = (e) => {
-        setCallProp({...callProp, isHold: true})
-    }
-
-    const onUnHold = (e) => {
-        setCallProp({...callProp, isHold: false})
-    }
-
-    const onMute = (e) => {
-        setCallProp({...callProp, isMuted: true})
-    }
-
-    const onUnMute = (e) => {
-        setCallProp({...callProp, isMuted: true})
-    }
+    //
+    // const onHold = (e) => {
+    //     setCallProp({...callProp, isHold: true})
+    // }
+    //
+    // const onUnHold = (e) => {
+    //     setCallProp({...callProp, isHold: false})
+    // }
+    //
+    // const onMute = (e) => {
+    //     setCallProp({...callProp, isMuted: true})
+    // }
+    //
+    // const onUnMute = (e) => {
+    //     setCallProp({...callProp, isMuted: false})
+    // }
 
     const toggleMute = () => {
-        call.session.isMuted() ? call.session.unmute() : call.session.mute()
+        call.session.isMuted().audio ? call.session.unmute({
+            audio: true
+        }) : call.session.mute({
+            audio: true
+        })
+
+        setCallProp({...callProp, isMuted: call.session.isMuted().audio})
     }
 
     const toggleHold = () => {
-        call.session.isOnHold() ? call.session.unhold() : call.session.hold()
+        call.session.isOnHold().local ? call.session.unhold() : call.session.hold()
+        setCallProp({...callProp, isHold: call.session.isOnHold().local})
     }
 
     const attenCall = () => {
@@ -274,13 +284,14 @@ export const CallComponent = memo(() => {
                    src={callTone}
                    loop={true}
                    id="calltone"
-                   muted={true}
                    preload="auto"/>
             <audio ref={audioRef} id={'userAudio'} autoPlay={true}/>
             <button id={'attendCall'} onClick={attenCall}>Atten</button>
             <button id={'endButton'} onClick={endCall}>End</button>
+
             <button id={'muteButton'} onClick={toggleMute}>Mute/unmute</button>
             <button id={'holdButton'} onClick={toggleHold}>Hold/Unhold</button>
+
             <button id={'transferCall'} onClick={transferCall}>Hold/Unhold</button>
         </div>
     )

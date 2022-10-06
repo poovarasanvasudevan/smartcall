@@ -3,11 +3,13 @@ import {DialerButton} from "./DialerButton.jsx";
 import Draggable from "react-draggable";
 import {dialpadState} from "../core/GlobalState.js";
 import {useAtom} from "jotai";
+import {useState} from "react";
 
 
 const DialerPanel = () => {
 
     const [dialPad, setDialPad] = useAtom(dialpadState)
+    const [typedNumber,setTypedNumber] = useState('')
 
     const dialButtons = [
         {label: '1', value: '1'},
@@ -24,6 +26,17 @@ const DialerPanel = () => {
         {label: '#', value: '#'},
     ]
 
+    const onClickNumber = (number) => {
+        setTypedNumber(`${typedNumber}${number}`)
+    }
+    const onKeyboardTyped = (e) => {
+        onKeyboardTyped(e.target.value)
+    }
+
+    const dialCall = () => {
+
+    }
+
     return (
         <>
             {dialPad && (
@@ -38,16 +51,20 @@ const DialerPanel = () => {
                             <IoClose size={15} color={'#fff'} className={'cursor-pointer'}
                                      onClick={() => setDialPad(!dialPad)}/>
                         </div>
-                        <div className={'call-body-panel flex-1 p-3 flex flex-col justify-center items-center'}>
-                            <div style={{background: '#f3f3f3'}} className={'flex p-2 h-9 flex-col w-full'}>
+                        <div className={'call-body-panel flex-1 px-3 pt-2 pb-3 flex flex-col justify-center items-center'}>
+                            <div className={'flex h-9 flex-col w-full'}>
+                                <input className={'h-9 w-full border-none outline-none'}
+                                       style={{textAlign:'center',fontSize: 14,background: '#f3f3f3'}}
+                                       value={typedNumber}
+                                       onChange={onKeyboardTyped}
+                                       placeholder={'Phone Number'} />
                             </div>
                             <div className={'flex-1'}>
                                 <div className={'dialer-layout'}>
                                     {dialButtons.map((item, index) => (
                                         <DialerButton
                                             number={item.label}
-                                            onClick={() => {
-                                            }}
+                                            onClick={() => onClickNumber(item.value)}
                                             controlNumber={item.value}
                                             label={item.letters}
                                             key={'controls_' + index}
@@ -57,6 +74,7 @@ const DialerPanel = () => {
                             </div>
                             <div className={'w-full px-1'}>
                                 <button
+                                    onClick={dialCall}
                                     className={'bg-green-600 py-1 flex rounded justify-center items-center text-white w-full'}>
                                     <FiPhoneCall/>
                                     <div className={'ml-2'}>Call</div>

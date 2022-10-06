@@ -1,5 +1,5 @@
 import {DialerButton} from "./DialerButton";
-import {BiTransfer, FiMicOff, FiMoreVertical, FiPause} from "react-icons/all";
+import {BiTransfer, FiMic, FiMicOff, FiMoreVertical, FiPause, FiPlay} from "react-icons/all";
 import {Space} from "antd";
 import {useAtom} from "jotai";
 import {callPropAtom, currentCallState, transferDialogAtom} from "../core/GlobalState.js";
@@ -29,7 +29,7 @@ const CallCommandPanel = () => {
                     className={'control-btn-color'}
                     hw={'w-9 h-9'}
                     onClick={onToggleMute}
-                    number={<FiMicOff color={'#fff'} size={14}/>}
+                    number={callProp.isMuted ? <FiMicOff color={'#fff'} size={14} /> : <FiMic color={'#fff'} size={14}/>}
                 />
                 <DialerButton
                     className={'control-btn-color'}
@@ -41,7 +41,7 @@ const CallCommandPanel = () => {
                     className={'control-btn-color'}
                     hw={'w-9 h-9'}
                     onClick={onToggleHold}
-                    number={<FiPause color={'#fff'} size={14}/>}
+                    number={callProp.isHold ? <FiPlay color={'#fff'} size={14} /> : <FiPause color={'#fff'} size={14}/>}
                 />
                 <DialerButton
                     className={'control-btn-color'}
