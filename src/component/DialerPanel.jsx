@@ -4,6 +4,10 @@ import Draggable from "react-draggable";
 import {dialpadState} from "../core/GlobalState.js";
 import {useAtom} from "jotai";
 import {useState} from "react";
+import {EventBus} from "../core/AppUtils.js";
+import {OUTGOING_CALL} from "../core/Config.js";
+import {debug} from "../core/Log.js";
+import {Input} from "antd";
 
 
 const DialerPanel = () => {
@@ -30,11 +34,12 @@ const DialerPanel = () => {
         setTypedNumber(`${typedNumber}${number}`)
     }
     const onKeyboardTyped = (e) => {
-        onKeyboardTyped(e.target.value)
+        //onClickNumber(e.target.value)
+        debug(e)
     }
 
     const dialCall = () => {
-
+        EventBus.$dispatch(OUTGOING_CALL, {number: typedNumber})
     }
 
     return (
@@ -53,7 +58,7 @@ const DialerPanel = () => {
                         </div>
                         <div className={'call-body-panel flex-1 px-3 pt-2 pb-3 flex flex-col justify-center items-center'}>
                             <div className={'flex h-9 flex-col w-full'}>
-                                <input className={'h-9 w-full border-none outline-none'}
+                                <Input className={'h-9 w-full border-none outline-none'}
                                        style={{textAlign:'center',fontSize: 14,background: '#f3f3f3'}}
                                        value={typedNumber}
                                        onChange={onKeyboardTyped}

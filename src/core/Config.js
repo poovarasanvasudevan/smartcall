@@ -1,11 +1,12 @@
 
-export const DEBUG = true
+export const DEBUG = false
 
 export const ATTEN_CALL = "ATTEN_CALL";
 export const END_CALL = "END_CALL";
 export const MUTE_CALL = "MUTE_CALL";
 export const HOLD_CALL = "HOLD_CALL";
 export const TRANSFER_CALL = "TRANSFER_CALL";
+export const OUTGOING_CALL = "OUTGOING_CALL";
 
 export const ATOKEN = "F9236B49CEFE88CDFA60011EC8EAB45DDA02C78A7C21D04B02F6DA32E5DC41B0";
 export const SMART_API_HEADERS = {

@@ -10,7 +10,7 @@ import {
     DEBUG,
     END_CALL,
     HOLD_CALL,
-    MUTE_CALL,
+    MUTE_CALL, OUTGOING_CALL,
     SIP_STATUS,
     TRANSFER_CALL
 } from "../core/Config.js";
@@ -59,6 +59,11 @@ export const CallComponent = memo(() => {
             .setAttribute("data-destination", e.extension);
         document.getElementById("transferCall").click();
     }
+    const _onOutgoingCall = (e) => {
+        document.getElementById("callOutgoing")
+            .setAttribute("data-destination", e.number);
+        document.getElementById("callOutgoing").click()
+    }
 
     const subscribeEvents = () => {
         EventBus.$on(ATTEN_CALL, _onAttenCallEvent)
@@ -66,6 +71,7 @@ export const CallComponent = memo(() => {
         EventBus.$on(MUTE_CALL, _onMuteCallEvent)
         EventBus.$on(HOLD_CALL, _onHoldCallEvent)
         EventBus.$on(TRANSFER_CALL, _onCallTransferEvent)
+        EventBus.$on(OUTGOING_CALL, _onOutgoingCall)
     }
     const unSubscribeEvents = () => {
         EventBus.$remove(ATTEN_CALL, _onAttenCallEvent)
@@ -73,7 +79,10 @@ export const CallComponent = memo(() => {
         EventBus.$remove(MUTE_CALL, _onMuteCallEvent)
         EventBus.$remove(HOLD_CALL, _onHoldCallEvent)
         EventBus.$remove(TRANSFER_CALL, _onCallTransferEvent)
+        EventBus.$remove(OUTGOING_CALL, _onOutgoingCall)
     }
+
+
 
     const onSipConnected = () => {
         setSipStatus(SIP_STATUS.CONNECTED)
@@ -130,39 +139,19 @@ export const CallComponent = memo(() => {
     }
 
     const onNewSession = (e) => {
+        debug(e)
         if (e.session._direction === "incoming") {
             e.session.on('ended', onIncomingCallEnded)
             e.session.on('accepted', onIncomingCallAccepted)
             e.session.on('failed', onIncomingCallFailed)
             e.session.on('peerconnection', () => {
                 e.session.connection.addEventListener('addstream', onAddStream)
-                // e.session.on('hold', onHold)
-                // e.session.on('unHold', onUnHold)
-                //
-                // e.session.on('mute', onMute)
-                // e.session.on('unmute', onUnMute)
             })
 
 
             onIncomingCall(e)
         }
     }
-    //
-    // const onHold = (e) => {
-    //     setCallProp({...callProp, isHold: true})
-    // }
-    //
-    // const onUnHold = (e) => {
-    //     setCallProp({...callProp, isHold: false})
-    // }
-    //
-    // const onMute = (e) => {
-    //     setCallProp({...callProp, isMuted: true})
-    // }
-    //
-    // const onUnMute = (e) => {
-    //     setCallProp({...callProp, isMuted: false})
-    // }
 
     const toggleMute = () => {
         call.session.isMuted().audio ? call.session.unmute({
@@ -231,6 +220,30 @@ export const CallComponent = memo(() => {
         }
     }
 
+    const callOutgoing = (e) => {
+        let eventHandlers = {
+            'progress': function(e) {
+                console.log('call is in progress',e);
+            },
+            'failed': function(e) {
+                console.log('call failed with cause: ', e);
+            },
+            'ended': function(e) {
+                console.log('call ended with cause: ', e);
+            },
+            'confirmed': function(e) {
+                console.log('call confirmed',e);
+            }
+        };
+
+        const options = {
+            'eventHandlers'    : eventHandlers,
+            'mediaConstraints' : { 'audio': true, 'video': false }
+        };
+        const ext = `sip:${e.currentTarget.getAttribute("data-destination")}@smartcall-dev.htcinc.com`
+        const session = ua.call(ext, options);
+    }
+
     useEffect(() => {
         if (userExtension) {
             if (DEBUG) {
@@ -291,8 +304,9 @@ export const CallComponent = memo(() => {
 
             <button id={'muteButton'} onClick={toggleMute}>Mute/unmute</button>
             <button id={'holdButton'} onClick={toggleHold}>Hold/Unhold</button>
-
             <button id={'transferCall'} onClick={transferCall}>Hold/Unhold</button>
+            <button id={'callOutgoing'} onClick={callOutgoing}>outoingCall</button>
+
         </div>
     )
 })
