@@ -21,9 +21,13 @@ const Login = () => {
         } else {
             getUserInfo({accessToken: access_token, refreshToken: refresh_token})
                 .then((res) => {
-                    Store.set('token_details', {access_token, refresh_token})
-                    Store.set('user_details', res)
-                    navigate('/')
+                    if(res.error) {
+                        setStatus(1)
+                    } else {
+                        Store.set('token_details', {access_token, refresh_token})
+                        Store.set('user_details', res)
+                        navigate('/')
+                    }
                 })
                 .catch((err) => {
                     setStatus(1)

@@ -3,6 +3,7 @@ import {lazy, Suspense} from "react";
 import FullScreenProgressBar from "../component/FullScreenProgressBar";
 import AdminOutlet from "../component/AdminOutlet.jsx";
 import Login from "../pages/Login.jsx";
+import OutgoingCall from "../pages/OutgoingCall.jsx";
 
 const Home = lazy(() => import('../pages/Home'))
 const CallLogs = lazy(() => import('../pages/CallLogs'))
@@ -17,6 +18,7 @@ const AppRouter = () => {
                         <Route path={'/call-logs'} element={<CallLogs/>}/>
                     </Route>
                     <Route path={'/login'} element={<Login />}/>
+                    <Route path={'/call'} element={<OutgoingCall />}/>
                 </Routes>
             </Suspense>
         </BrowserRouter>

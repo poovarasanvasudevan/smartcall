@@ -14,6 +14,10 @@ const ControlPanel = () => {
         navigate("/call-logs")
     }
 
+    const outgoingCall = () => {
+        window.open("/call?userid=CTS-PVASUD&client=CTS",'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=300,height=400');
+    }
+
     return (
 
         <div className={'flex mt-3 mb-1  py-1.5 bg-white mx-6 border border-gray-100'}>
@@ -44,6 +48,13 @@ const ControlPanel = () => {
                         onClick={() => setDialPad(!dialPad)}>
                     <FiPhoneCall/>
                     &nbsp; &nbsp;Call
+                </button>
+
+
+                <button className={'flex bg-green-600 h-6 px-2 py-1 items-center text-white'}
+                        onClick={outgoingCall}>
+                    <FiPhoneCall/>
+                    &nbsp; &nbsp;TestCall
                 </button>
             </Space>
         </div>

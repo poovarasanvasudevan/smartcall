@@ -1,5 +1,5 @@
 
-export const DEBUG = false
+export const DEBUG = true
 
 export const ATTEN_CALL = "ATTEN_CALL";
 export const END_CALL = "END_CALL";

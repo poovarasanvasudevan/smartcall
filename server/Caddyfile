@@ -1,0 +1,16 @@
+{
+    debug
+    http_port 8999
+    admin off
+}
+
+:2016 {
+    encode zstd gzip
+    header {
+         X-App-ProtoStandard poovarasan.vasudevan-v1
+         Server iampoov-std-v1-http3-experimental
+    }
+
+    reverse_proxy /smartcall/*  http://10.165.135.132:8080/smartcall/
+    reverse_proxy /* http://localhost:8411
+}
