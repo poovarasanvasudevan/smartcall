@@ -1,5 +1,5 @@
 rm -R ./web && echo "👍 Removed old web folder" &&
-cd .. && echo "👍 Moved up a directory" &&
+cd .. && echo "👍 Moved up a directory  to $(pwd)" &&
 yarn build && echo "👍 Built new web folder" &&
 cd server && echo "👍 Moved back to server directory"&&
 mkdir web && echo "👍 Created new web folder" &&
