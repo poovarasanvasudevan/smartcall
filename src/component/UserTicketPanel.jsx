@@ -13,13 +13,12 @@ const UserTicketPanel = () => {
     ]
 
     return (
-        <div className={'flex flex-col bg-white border border-gray-100'} >
+        <div className={'flex flex-col bg-white border border-gray-100'}>
             <Tabs
                 tabBarStyle={{background:'var(--header-color)',color: '#fff',height:"2.2rem"}}
                 size={'small'}
                 items={items}
             />
-
         </div>
     )
 }

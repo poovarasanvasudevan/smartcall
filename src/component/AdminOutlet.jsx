@@ -27,8 +27,10 @@ const AdminOutlet = memo(() => {
             .then((res) => {
                 debug(res)
                 setUserExtension(res)
-            }).catch((err) => {
+            })
+            .catch((err) => {
                 debug(err)
+                setUserExtension({})
             })
 
 
@@ -37,13 +39,14 @@ const AdminOutlet = memo(() => {
 
     return (
         <>
-            {userExtension && <>
-                <CallComponent/>
-                <CallPanel/>
-                <CallCommandPanel/>
-                <DialerPanel/>
-
-            </>}
+            {userExtension &&
+                <>
+                    <CallComponent/>
+                    <CallPanel/>
+                    <CallCommandPanel/>
+                    <DialerPanel/>
+                </>
+            }
 
             <CallTransferDialog/>
             <Outlet/>

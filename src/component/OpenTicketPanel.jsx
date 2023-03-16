@@ -47,11 +47,13 @@ const OpenTicketPanel = () => {
     }, [selectedUser])
 
     return (
-        <div className={'px-4 pb-4'} style={{minHeight: 200}}>
+        <div className={'px-3 pb-6'}>
             {selectedUser && (
                 <Table
                     columns={COLUMNS}
+                    scroll={{ y: 300 }}
                     size={'small'}
+                    pagination={false}
                     rowClassName={'cursor-pointer hover-border-row'}
                     dataSource={openTickets.data}
                     rowKey={'Ticket_sk'}

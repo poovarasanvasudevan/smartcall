@@ -1,8 +1,20 @@
 import {API_TOKEN, APIUrl, DEFAULT_HEADERS, SMART_API_HEADERS} from "./Config.js";
 import {Store} from "./AppUtils.js";
 
+export const getAccessToken = (ref_token) => {
+    return window.fetch(
+        APIUrl.GET_ACCESS_TOKEN + "?refresh_token=" + ref_token + "&grant_type=refresh_token", {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Basic Y3Rzc3A6c2VjcmV0`
+            },
+            method: 'POST'
+        }
+    ).then(res => res.json())
+}
 
 export const getUserInfo = async ({accessToken, refreshToken}) => {
+    const INP = {}
     return window.fetch(
         APIUrl.GET_USER_INFO, {
             headers: {
@@ -87,8 +99,7 @@ export const agentList = async () => {
                 ]
             }),
         }
-    )
-        .then(x => x.json())
+    ).then(x => x.json())
 }
 
 export const queueList = async () => {
@@ -100,7 +111,10 @@ export const queueList = async () => {
                 "count": 0
             }),
         }
-    )
-        .then(x => x.json())
+    ).then(x => x.json())
 }
 
+
+export const fetchEnduserExtension = async () => {
+
+}

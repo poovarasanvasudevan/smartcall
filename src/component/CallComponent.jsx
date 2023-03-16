@@ -1,4 +1,4 @@
-import {memo, useCallback, useEffect, useRef, useState} from "react";
+import {memo, useEffect, useRef, useState} from "react";
 import JsSIP from "@siwting/jssip";
 import {useAtom} from "jotai";
 import {callPropAtom, currentCall, currentCallState, sipStatus, userExtenstionAtom} from "../core/GlobalState.js";
@@ -9,10 +9,10 @@ import {
     CALL_STATE,
     DEBUG,
     END_CALL,
-    HOLD_CALL,
+    HOLD_CALL, makeSipUri,
     MUTE_CALL, OUTGOING_CALL,
     SIP_STATUS,
-    TRANSFER_CALL
+    TRANSFER_CALL, WSS_SERVER
 } from "../core/Config.js";
 import {debug} from "../core/Log.js";
 
@@ -83,7 +83,6 @@ export const CallComponent = memo(() => {
     }
 
 
-
     const onSipConnected = () => {
         setSipStatus(SIP_STATUS.CONNECTED)
     }
@@ -127,6 +126,7 @@ export const CallComponent = memo(() => {
             ...e.request.from
         }
         Store.set("CurrentCall", c)
+        console.log(c)
         setCurrentCall(c)
         setLocalCallState(e)
         setCallState(CALL_STATE.RINGING)
@@ -151,6 +151,14 @@ export const CallComponent = memo(() => {
 
             onIncomingCall(e)
         }
+
+        if (e.session._direction === "outgoing") {
+            e.session.on('peerconnection', () => {
+                console.log("Peer Confirmed")
+                e.session.connection.addEventListener('addstream', onAddStream)
+            })
+            e.session.on('addstream', onAddStream)
+        }
     }
 
     const toggleMute = () => {
@@ -174,10 +182,6 @@ export const CallComponent = memo(() => {
                 mediaConstraints: {
                     audio: true, // only audio calls
                     video: false
-                },
-                pcConfig: {
-                    iceTransportPolicy: "all",
-                    rtcpMuxPolicy: "negotiate"
                 }
             }
 
@@ -211,7 +215,7 @@ export const CallComponent = memo(() => {
             }
         }
         try {
-            const ext = `sip:${e.currentTarget.getAttribute("data-destination")}@smartcall-dev.htcinc.com`
+            const ext = `sip:${e.currentTarget.getAttribute("data-destination")}@asterisk.inditechman.com`
             call.session.refer(ext, {
                 eventHandlers: eventHandlers
             });
@@ -222,26 +226,29 @@ export const CallComponent = memo(() => {
 
     const callOutgoing = (e) => {
         let eventHandlers = {
-            'progress': function(e) {
-                console.log('call is in progress',e);
+            'progress': function (e) {
+                console.log('call is in progress', e);
             },
-            'failed': function(e) {
+            'failed': function (e) {
                 console.log('call failed with cause: ', e);
             },
-            'ended': function(e) {
+            'ended': function (e) {
                 console.log('call ended with cause: ', e);
             },
-            'confirmed': function(e) {
-                console.log('call confirmed',e);
-            }
+            'confirmed': function (e) {
+                console.log('call confirmed', e);
+            },
         };
 
         const options = {
-            'eventHandlers'    : eventHandlers,
-            'mediaConstraints' : { 'audio': true, 'video': false }
+            'eventHandlers': eventHandlers,
+            'mediaConstraints': {'audio': true, 'video': false}
         };
-        const ext = `sip:${e.currentTarget.getAttribute("data-destination")}@smartcall-dev.htcinc.com`
+        const ext = makeSipUri(e.currentTarget.getAttribute("data-destination"))
         const session = ua.call(ext, options);
+        session.connection.addEventListener('addstream', function (e) {
+            onAddStream(e)
+        });
     }
 
     useEffect(() => {
@@ -253,11 +260,11 @@ export const CallComponent = memo(() => {
             }
             subscribeEvents()
 
-            let socket = new JsSIP.WebSocketInterface('wss://smartcall-dev.htcinc.com:8089/ws');
+            let socket = new JsSIP.WebSocketInterface(WSS_SERVER);
             let configuration = {
                 sockets: [socket],
-                uri: `sip:${userExtension.extension}@smartcall-dev.htcinc.com`,
-                password: userExtension.extension_password,
+                uri: makeSipUri("1000"),
+                password: 1000,
                 register: true
             };
             let uatemp = new JsSIP.UA(configuration);

@@ -1,7 +1,10 @@
 {
-    debug
     http_port 8999
     admin off
+}
+
+http://:8700 {
+    reverse_proxy * http://10.165.135.132:8080
 }
 
 :2016 {
@@ -11,6 +14,6 @@
          Server iampoov-std-v1-http3-experimental
     }
 
-    reverse_proxy /smartcall/*  http://10.165.135.132:8080/smartcall/
-    reverse_proxy /* http://localhost:8411
+    reverse_proxy /smartcall/*  localhost:8700
+    reverse_proxy /*  localhost:8411
 }

@@ -1,4 +1,4 @@
-import {useRef, useEffect, useState, useLayoutEffect} from "react";
+import {useRef, useEffect, useState, useLayoutEffect, useCallback} from "react";
 import useResizeObserver from "@react-hook/resize-observer";
 
 export function useHorizontalScroll() {
@@ -62,4 +62,26 @@ export const useSize = (target) => {
         useResizeObserver(target, (entry) => setSize(entry.contentRect))
     }
     return size
+}
+
+
+export const useStateWithRef = (initialState) => {
+    const [state, _setState] = useState(initialState);
+    const ref = useRef(state);
+    const setState = useCallback(
+        (newState) => {
+            if (typeof newState === 'function') {
+                _setState(prevState => {
+                    const computedState = newState(prevState);
+                    ref.current = computedState;
+                    return computedState;
+                });
+            } else {
+                ref.current = newState;
+                _setState(newState);
+            }
+        },
+        []
+    );
+    return [state, setState, ref];
 }

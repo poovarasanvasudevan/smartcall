@@ -1,7 +1,7 @@
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {Progress, Result, Spin} from "antd";
-import {getUserInfo} from "../core/Api.js";
+import {getAccessToken, getUserInfo} from "../core/Api.js";
 import {Store} from "../core/AppUtils.js";
 
 
@@ -12,25 +12,29 @@ const Login = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const access_token = searchParams.get('access_token')
-        const refresh_token = searchParams.get('refresh_token')
+        const refresh_token = searchParams.get('rf_tkn')
         setStatus(0)
 
-        if (access_token == null || refresh_token === null) {
+        if (refresh_token === null) {
             setStatus(1)
         } else {
-            getUserInfo({accessToken: access_token, refreshToken: refresh_token})
+            getAccessToken(refresh_token)
                 .then((res) => {
-                    if(res.error) {
-                        setStatus(1)
-                    } else {
-                        Store.set('token_details', {access_token, refresh_token})
-                        Store.set('user_details', res)
-                        navigate('/')
+                    if (res.access_token) {
+                        getUserInfo({accessToken: res.access_token, refreshToken: res.refresh_token})
+                            .then((res1) => {
+                                if (res1.error) {
+                                    setStatus(1)
+                                } else {
+                                    Store.set('token_details', res)
+                                    Store.set('user_details', res1)
+                                    navigate('/')
+                                }
+                            })
+                            .catch((err) => {
+                                setStatus(1)
+                            })
                     }
-                })
-                .catch((err) => {
-                    setStatus(1)
                 })
         }
 

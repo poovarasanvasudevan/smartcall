@@ -1,15 +1,17 @@
 import avatar from '../assets/avatar.webp'
 import {MdCallEnd} from "react-icons/all.js";
 import {useEffect, useRef, useState} from "react";
-import {CALL_STATE, DEBUG} from "../core/Config.js";
+import {CALL_STATE, DEBUG, makeSipUri, WSS_SERVER} from "../core/Config.js";
 import JsSIP from "@siwting/jssip";
-import {debug} from "../core/Log.js";
+import {useSearchParams} from "react-router-dom";
+import {useStateWithRef} from "../core/hooks.js";
 
 const OutgoingCall = () => {
 
-    const [endUserSession, setEndUserSession] = useState(null);
-    const [callStatus, setCallStatus] = useState(CALL_STATE.CALLING);
+    const [endUserSession, setEndUserSession] = useStateWithRef(null);
+    const [callStatus, setCallStatus] = useStateWithRef(CALL_STATE.CALLING);
     const audioRef = useRef(null)
+    const [params, setParams] = useSearchParams();
 
     const onAddStream = (e) => {
         console.log("Stream Added")
@@ -17,58 +19,62 @@ const OutgoingCall = () => {
         audioRef.current.play();
     }
     const _onSipConnected = (e) => {
+        console.log("SIP Connected")
     }
     const _onSipDisConnected = (e) => {
+        console.log("SIP Dis Connected")
     }
-    const _onSipRegistered = (e) => {
+    const _onSipRegistered = (userAgent, ext) => {
+        console.log("SIP Registered")
+        callUser(userAgent, ext)
     }
     const _onSipUnRegistered = (e) => {
+
+        console.log("SIP UnRegistered")
     }
     const _onSipRegistrationFailed = (e) => {
+        console.log("SIP Registered Failed")
     }
-
-
     const _onNewSession = (e) => {
         if (e.session._direction === "outgoing") {
             e.session.on('peerconnection', () => {
-                console.log("Peer Confirmed")
                 e.session.connection.addEventListener('addstream', onAddStream)
             })
             e.session.on('addstream', onAddStream)
         }
     }
-
     const closeWindow = () => {
-        setTimeout(() => {
-            window.close()
-        }, 3000);
+        // setTimeout(() => {
+        //     window.close()
+        // }, 3000);
     }
-
-    const connectToSIP = () => {
+    const connectToSIP = (ext) => {
         if (DEBUG) {
             JsSIP.debug.enable('JsSIP:*');
         } else {
             JsSIP.debug.disable('JsSIP:*');
         }
 
-
-        let socket = new JsSIP.WebSocketInterface('wss://smartcall-dev.htcinc.com:8089/ws');
+        let socket = new JsSIP.WebSocketInterface(WSS_SERVER);
         let configuration = {
             sockets: [socket],
-            uri: `sip:1004@smartcall-dev.htcinc.com`,
-            password: '1004',
-            register: true
+            uri: makeSipUri(1001),
+            password: '1001',
+            register: true,
+            display_name: params.get("username")
         };
         let uatemp = new JsSIP.UA(configuration);
         uatemp.on('connected', _onSipConnected);
         uatemp.on('disconnected', _onSipDisConnected);
-        uatemp.on('registered', _onSipRegistered);
+        uatemp.on('registered', () => _onSipRegistered(uatemp, ext));
         uatemp.on('unregistered', _onSipUnRegistered);
         uatemp.on('registrationFailed', _onSipRegistrationFailed);
         uatemp.on('newRTCSession', _onNewSession);
 
         uatemp.start()
 
+    }
+    const callUser = (userAgent, ext) => {
 
         const eventHandlers = {
             'progress': function (e) {
@@ -85,39 +91,42 @@ const OutgoingCall = () => {
             'confirmed': function (e) {
                 setCallStatus(CALL_STATE.ACCEPTED)
                 console.log('call confirmed');
-            },
-            'addstream': function (e) {
-                console.log('addstream');
-                onAddStream(e)
             }
         };
 
         const options = {
             'eventHandlers': eventHandlers,
-            'mediaConstraints': {'audio': true, 'video': true}
+            'mediaConstraints': {'audio': true, 'video': false}
         };
 
-        const session = uatemp.call('sip:1000@smartcall-dev.htcinc.com', options);
+        const session = userAgent.call(makeSipUri(ext), options);
+
+        session
+            .connection
+            .addEventListener('addstream', function (e) {
+                onAddStream(e)
+            });
         setEndUserSession(session);
     }
-
     const endCall = () => {
         if (endUserSession) {
             endUserSession.terminate();
             closeWindow();
         }
     }
-
     const unloadCallback = (e) => {
         e.preventDefault();
+        endCall();
+        return e.returnValue = 'Are you sure you want to close?';
     }
 
     useEffect(() => {
-        connectToSIP()
-        window.addEventListener("beforeunload", unloadCallback);
+        connectToSIP(params.get('ext'))
+        window.addEventListener("unload", unloadCallback);
 
         return () => {
-            return window.removeEventListener("beforeunload", unloadCallback);
+            endCall();
+            return window.removeEventListener("unload", unloadCallback);
         }
     }, [])
 
